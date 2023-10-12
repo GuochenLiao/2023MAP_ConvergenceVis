@@ -13,11 +13,11 @@ library(ggplot2)
 ```{R}
 
 # Sample data
-data <- read.csv("your_data.csv")
+data <- data.frame(x = c(5, 3, 2, 1, 0.5), y = c(100, 80, 50, 20, 2))
 
-# Replace 'attribute1' and 'attribute2' with your actual column names
-attribute1 <- "your_attribute1_column_name"
-attribute2 <- "your_attribute2_column_name"
+# Replace 'attribute1' and 'attribute2'  with column names
+attribute1 <- "x"
+attribute2 <- "y"
 
 # Log2 transformation
 data$log_attribute1 <- log2(data[[attribute1]])
@@ -40,6 +40,40 @@ p <- ggplot(data, aes(x = log_attribute1, y = log_attribute2)) +
 
 # Display the plot
 print(p)
+
+```
+
+
+```{R}
+# Load necessary libraries
+library(ggplot2)
+
+# Sample data
+set.seed(123)
+data <- data.frame(
+  Category = rep(c("A", "B"), each=100),
+  Subcategory = rep(c("X", "Y"), each=50, times=2),
+  Value = c(rnorm(50, mean=50, sd=10), rnorm(50, mean=60, sd=10), rnorm(50, mean=55, sd=10), rnorm(50, mean=65, sd=10))
+)
+
+# Create a split violin plot
+p <- ggplot(data, aes(x=Category, y=Value, fill=Subcategory)) +
+  geom_violin(scale="width", trim=FALSE, position=position_dodge(width=0.9), width=0.9) +
+  scale_fill_manual(values=c("lightblue", "pink")) +
+  geom_dotplot(binaxis='y', stackdir='center', dotsize = 0.5, position=position_dodge(width=0.9)) +
+  labs(title="Split Violin Plot",
+       x="Category",
+       y="Value") +
+  theme_minimal() +
+  geom_violin(data = subset(data, Subcategory == "X"), aes(x = Category, y = Value, fill = Subcategory), 
+              draw_quantiles = c(0.25, 0.5, 0.75), trim = TRUE, scale = "area", width = 0.5, side = "l") +
+  geom_violin(data = subset(data, Subcategory == "Y"), aes(x = Category, y = Value, fill = Subcategory), 
+              draw_quantiles = c(0.25, 0.5, 0.75), trim = TRUE, scale = "area", width = 0.5, side = "r") +
+  scale_fill_manual(values = c("lightblue", "pink"))
+
+# Display the plot
+print(p)
+
 
 
 ```
