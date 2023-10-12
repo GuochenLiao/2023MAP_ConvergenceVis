@@ -1,0 +1,45 @@
+---
+title: "MAP_Visualization"
+author: "Guochen Liao"
+date: "2023-10-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+```
+
+```{R}
+
+# Sample data
+data <- read.csv("your_data.csv")
+
+# Replace 'attribute1' and 'attribute2' with your actual column names
+attribute1 <- "your_attribute1_column_name"
+attribute2 <- "your_attribute2_column_name"
+
+# Log2 transformation
+data$log_attribute1 <- log2(data[[attribute1]])
+data$log_attribute2 <- log2(data[[attribute2]])
+
+# Linear model
+model <- lm(log_attribute2 ~ log_attribute1, data = data)
+slope <- coef(model)[2]
+
+# Scatterplot
+p <- ggplot(data, aes(x = log_attribute1, y = log_attribute2)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE, color = "blue") +
+  ggtitle("Scatterplot with Log2 Transformed Attributes") +
+  xlab(paste("Log2(", attribute1, ")", sep = "")) +
+  ylab(paste("Log2(", attribute2, ")", sep = "")) +
+  annotate("text", x = min(data$log_attribute1), y = max(data$log_attribute2), 
+           label = paste("Slope =", round(slope, 3)), hjust = 0, vjust = 1) +
+  theme_minimal()
+
+# Display the plot
+print(p)
+
+
+```
